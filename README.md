@@ -17,7 +17,8 @@ gcloud container clusters get-credentials [CLUSTER_NAME] --region [REGION]
 kubectl get pods
 <If this works, your kubectl is correctly set up and connected to your cluster.>
 
-gcloud container clusters list
+gcloud container clusters list  
+=================
 
 
 
