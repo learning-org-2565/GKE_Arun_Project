@@ -17,7 +17,9 @@ kubectl version --client
 
 ## Step 3: Connect to Your Kubernetes Cluster
 gcloud container clusters get-credentials [CLUSTER_NAME] --region [REGION]
+
 kubectl get pods
+
 <If this works, your kubectl is correctly set up and connected to your cluster.>
 
 gcloud container clusters list  
