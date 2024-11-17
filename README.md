@@ -1,5 +1,6 @@
  # GKE project , deploy containerized apps in it
- 
+ If you are getting issues with git push , even after tried with git pull . try 
+ <git push --force>
  In high level we have to make doc how we are building the manifest file and make it helm before deploy
 
  # Step 1: Authenticate and Configure the GCP Project using SDK GCLOUD
@@ -19,6 +20,7 @@ kubectl get pods
 
 gcloud container clusters list  
 =================
+
 
 
 
