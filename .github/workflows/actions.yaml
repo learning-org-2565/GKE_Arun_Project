@@ -1,6 +1,7 @@
 name: 01-Sample deployment file
 
 on: 
+    push: 
     workflow_dispatch: 
         inputs:
             action:
