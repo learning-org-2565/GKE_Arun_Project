@@ -1,4 +1,4 @@
-name: 01-Sample deployment file
+name: 02-Enhanced workflow for deployment
 
 on: 
   workflow_dispatch: 
@@ -13,7 +13,7 @@ on:
         required: true
 
 jobs:
-  k8s-deployment-1:
+  k8s-deployment-2:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -32,9 +32,7 @@ jobs:
 
       - name: Install gke-gcloud-auth-plugin
         run: |
-          if ! gcloud components list | grep -q 'gke-gcloud-auth-plugin'; then
-            gcloud components install gke-gcloud-auth-plugin --quiet
-          fi
+            gcloud components install gke-gcloud-auth-plugin
       
       - name: Authenticate with GKE
         run: |

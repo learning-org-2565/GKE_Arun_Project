@@ -1,4 +1,4 @@
-name: 02-Enhanced worklfow
+name: 01-actions workflow   
 
 on: 
     #push: 
