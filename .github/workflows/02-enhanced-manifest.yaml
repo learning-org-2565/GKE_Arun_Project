@@ -13,7 +13,7 @@ on:
         required: true
 
 jobs:
-  k8s-deployment:
+  k8s-deployment-1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
