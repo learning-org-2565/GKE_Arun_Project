@@ -5,7 +5,7 @@ on:
     inputs:
       action:
         description: "Action to perform on the Kubernetes manifest (apply or delete)"
-        default: apply 
+        default: none
         type: choice
         options:
           - apply
@@ -49,12 +49,7 @@ jobs:
         run: |
             kubectl delete -f nginx-deployment.yaml
       
-    #   - name: Apply Kubernetes Manifest
-    #     if: ${{ inputs.action == 'apply' }}
-    #     run: |
-    #       kubectl apply -f nginx-deployment.yaml
-      
-    #   - name: Delete Kubernetes Manifest
-    #     if: ${{ inputs.action == 'delete' }}
-    #     run: |
-    #       kubectl delete -f nginx-deployment.yaml
+      - name: Check Deployment Rollout Status
+        run: |
+            kubectl rollout status deployment/nginx-deployment
+          
