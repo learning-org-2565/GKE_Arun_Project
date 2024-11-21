@@ -45,4 +45,4 @@ jobs:
            # Step 4: Apply Kubernetes Manifest 
             - name: Apply Kubernetes Manifest
               run: |
-                kubectl apply -f nginx-deployment.yaml
+                kubectl delete -f nginx-deployment.yaml
