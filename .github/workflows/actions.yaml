@@ -37,7 +37,7 @@ jobs:
                     gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
                     --zone us-east1-b
 
-           # Step 4: Apply Kubernetes Manifest
+           # Step 4: Apply Kubernetes Manifest 
             - name: Apply Kubernetes Manifest
               run: |
                 kubectl apply -f nginx-deployment.yaml
