@@ -17,4 +17,26 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: checkout the code
-              uses: actions/checkout@v4 
+              uses: actions/checkout@v4
+        
+            - name: Set up Google Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2  # Updated to latest version
+              with:
+                project_id: ${{ secrets.GCP_PROJECT_ID }}
+                install_components: 'beta'
+            
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2  # Updated to latest version
+              with:
+                credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+            # Step 3: Authenticate with GKE
+            - name: Authenticate with GKE
+              run: |
+                    gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
+                    --region ${{ secrets.GKE_CLUSTER_REGION }}
+
+           # Step 4: Apply Kubernetes Manifest
+            - name: Apply Kubernetes Manifest
+              run: |
+                kubectl apply -f nginx-deployment.yaml
