@@ -1,76 +1,62 @@
 name: 01-Sample deployment file
 
 on: 
-    #push: 
-    workflow_dispatch: 
-        inputs:
-            action:
-                description: want to deploy this file
-                default: yes 
-                type: choice
-                options:
-                    - yes
-                    - no
-                required: true
-            environment:
-                description: Target environment
-                type: choice
-                options:
-                    - dev
-                    - staging
-                    - production
-                required: true
+  workflow_dispatch: 
+    inputs:
+      action:
+        description: "Action to perform on the Kubernetes manifest (apply or delete)"
+        default: apply 
+        type: choice
+        options:
+          - apply
+          - delete
+        required: true
 
 jobs:
-    k8s-deployment:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Log Workflow Inputs
-              run: |
-                echo "Deployment Action: ${{ inputs.action }}"
-                echo "Target Environment: ${{ inputs.environment }}"
-            
-            - name: Validate Deployment Choice
-              if: inputs.action == 'no'
-              run: |
-                echo "Deployment cancelled as per user input"
-                exit 1
+  k8s-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+      
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'beta'
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-            - name: checkout the code
-              uses: actions/checkout@v4
-        
-            - name: Validate Manifest File Existence
-              run: |
-                if [ ! -f "nginx-deployment.yaml" ]; then
-                    echo "Error: nginx-deployment.yaml not found"
-                    exit 1
-                fi
-                echo "Manifest file nginx-deployment.yaml exists"
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          if ! gcloud components list | grep -q 'gke-gcloud-auth-plugin'; then
+            gcloud components install gke-gcloud-auth-plugin --quiet
+          fi
+      
+      - name: Authenticate with GKE
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
+          --zone us-east1-b
 
 
-            - name: Set up Google Cloud SDK
-              uses: google-github-actions/setup-gcloud@v2
-              with:
-                project_id: ${{ secrets.GCP_PROJECT_ID }}
-                install_components: 'beta'
-            
-            - name: Authenticate to Google Cloud
-              uses: google-github-actions/auth@v2
-              with:
-                credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-        
-            # - name: Install gke-gcloud-auth-plugin
-            #   run: gcloud components install gke-gcloud-auth-plugin
-
-            - name: Authenticate with GKE
-              run: |
-                gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
-                --zone us-east1-b
-
-            - name: Apply Kubernetes Manifest
-              run: |
-                kubectl apply -f nginx-deployment.yaml
-
-            - name: Verify Deployment
-              run: |
-                kubectl rollout status deployment/nginx-deployment
+      - name: Apply K8s manifest file
+        if: ${{ inputs.action == 'apply' }}
+        run: |
+            kubectl apply -f nginx-deployment.yaml
+      - name: Delete the k8s manifest file
+        if: ${{ inputs.action == 'delete' }}
+        run: |
+            kubectl delete -f nginx-deployment.yaml
+      
+    #   - name: Apply Kubernetes Manifest
+    #     if: ${{ inputs.action == 'apply' }}
+    #     run: |
+    #       kubectl apply -f nginx-deployment.yaml
+      
+    #   - name: Delete Kubernetes Manifest
+    #     if: ${{ inputs.action == 'delete' }}
+    #     run: |
+    #       kubectl delete -f nginx-deployment.yaml
