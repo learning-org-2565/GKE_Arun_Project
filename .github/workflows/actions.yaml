@@ -1,0 +1,20 @@
+name: 01-Sample deployment file
+
+on: 
+    workflow_dispatch: 
+        inputs:
+            action:
+                description: want to deploy this file
+                default: yes 
+                type: choice
+                options:
+                    - yes
+                    - no
+                required: true
+
+jobs:
+    k8s-deployment:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout the code
+              uses: actions/checkout@v4 
