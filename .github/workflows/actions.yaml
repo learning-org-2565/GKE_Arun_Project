@@ -34,7 +34,7 @@ jobs:
             - name: Authenticate with GKE
               run: |
                     gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
-                    --region ${{ secrets.GKE_CLUSTER_REGION }}
+                    --zone us-east1-b
 
            # Step 4: Apply Kubernetes Manifest
             - name: Apply Kubernetes Manifest
